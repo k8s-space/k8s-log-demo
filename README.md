@@ -145,9 +145,9 @@ This will trigger a log entry in the NGINX logs, which Fluent Bit will collect a
 To clean up the deployed resources, run:
 
    ```bash
-   kubectl delete service -n k8s-log-demo
-   kubectl delete deployment -n k8s-log-demo
-   kubectl delete configmaps -n k8s-log-demo
+   kubectl delete service -n k8s-log-demo --all
+   kubectl delete deployment -n k8s-log-demo --all
+   kubectl delete configmaps -n k8s-log-demo --all
    ```
 
 ## License
