@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch
+  namespace: k8s-log-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+        - name: elasticsearch
+          image: docker.elastic.co/elasticsearch/elasticsearch:8.6.2
+          env:
+            - name: discovery.type
+              value: single-node
+            - name: network.host
+              value: "0.0.0.0"
+          ports:
+            - containerPort: 9200
+          volumeMounts:
+            - name: elasticsearch-storage
+              mountPath: /usr/share/elasticsearch/data
+            - name: elasticsearch-config
+              mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+              subPath: elasticsearch.yml            
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "1"
+            limits:
+              memory: "4Gi"
+              cpu: "2"
+      volumes:
+        - name: elasticsearch-storage
+          emptyDir: {}  # Optional: Verwende persistenten Speicher in einer produktiven Umgebung.
+        - name: elasticsearch-config
+          configMap:
+            name: elasticsearch-config        

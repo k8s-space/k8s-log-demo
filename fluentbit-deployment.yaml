@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fluentbit
+  namespace: k8s-log-demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fluentbit
+  template:
+    metadata:
+      labels:
+        app: fluentbit
+    spec:      
+      containers:
+        - name: fluentbit
+          image: fluent/fluent-bit:latest
+          volumeMounts:
+            - name: log-volume
+              mountPath: /var/log/nginx
+            - name: fluentbit-config
+              mountPath: /fluent-bit/etc/fluent-bit.conf
+              subPath: fluent-bit.conf
+          env:
+            - name: FLUENT_ELASTICSEARCH_HOST
+              value: "elasticsearch"
+            - name: FLUENT_ELASTICSEARCH_PORT
+              value: "9200"            
+            - name: FLUENT_ELASTICSEARCH_INDEX
+              value: "nginx-logs"        
+      volumes:
+        - name: log-volume
+          hostPath:
+            path: /var/log/nginx
+            type: Directory
+        - name: fluentbit-config
+          configMap:
+            name: fluentbit-config

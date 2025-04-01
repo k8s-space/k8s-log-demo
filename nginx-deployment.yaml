@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-nginx
+  namespace: k8s-log-demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-nginx
+  template:
+    metadata:
+      labels:
+        app: my-nginx
+    spec:      
+      containers:
+        - name: my-container
+          image: nginx
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: log-volume
+              mountPath: /var/log/nginx
+      volumes:
+        - name: log-volume
+          hostPath:
+            path: /var/log/nginx
+            type: DirectoryOrCreate
