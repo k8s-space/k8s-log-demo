@@ -1,10 +1,9 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: DaemonSet
 metadata:
   name: fluentbit
   namespace: k8s-log-demo
 spec:
-  replicas: 2
   selector:
     matchLabels:
       app: fluentbit
@@ -12,7 +11,7 @@ spec:
     metadata:
       labels:
         app: fluentbit
-    spec:      
+    spec:
       containers:
         - name: fluentbit
           image: fluent/fluent-bit:latest
@@ -26,9 +25,9 @@ spec:
             - name: FLUENT_ELASTICSEARCH_HOST
               value: "elasticsearch"
             - name: FLUENT_ELASTICSEARCH_PORT
-              value: "9200"            
+              value: "9200"
             - name: FLUENT_ELASTICSEARCH_INDEX
-              value: "nginx-logs"        
+              value: "nginx-logs"
       volumes:
         - name: log-volume
           hostPath:
